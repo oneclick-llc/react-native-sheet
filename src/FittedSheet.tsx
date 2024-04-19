@@ -19,7 +19,7 @@ import {
 
 export const _FittedSheet = requireNativeComponent<any>("SheetView");
 
-interface FittedSheetParams {
+export interface FittedSheetParams {
   readonly dismissable?: boolean;
   readonly sheetHeight?: number;
   readonly maxWidth?: number;
@@ -28,6 +28,10 @@ interface FittedSheetParams {
   readonly isDark?: boolean;
   readonly topLeftRightCornerRadius?: number;
   readonly backgroundColor?: string;
+  /**
+   * Android only
+   */
+  readonly isStatusBarBgLight?: boolean;
 }
 
 type Children = ((data: any) => React.ReactElement) | React.ReactElement;

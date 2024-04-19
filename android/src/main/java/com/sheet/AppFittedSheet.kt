@@ -3,17 +3,14 @@ package com.sheet
 import android.content.Context
 import android.graphics.Color
 import android.os.Build
-import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewStructure
 import android.view.accessibility.AccessibilityEvent
-import android.widget.FrameLayout
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.facebook.react.bridge.*
 import com.facebook.react.uimanager.events.RCTEventEmitter
-import com.google.android.material.snackbar.Snackbar
 import com.modal.safeShow
 
 
@@ -44,6 +41,8 @@ class AppFittedSheet(context: Context) : ViewGroup(context), LifecycleEventListe
     get() = params?.color("backgroundColor", context) ?: Color.TRANSPARENT
   private val isDark: Boolean
     get() = params?.bool("isDark") ?: false
+  private val isStatusBarBgLight: Boolean
+    get() = params?.bool("isStatusBarBgLight") ?: false
 
   private fun getCurrentActivity(): AppCompatActivity {
     return (context as ReactContext).currentActivity as AppCompatActivity
@@ -63,7 +62,8 @@ class AppFittedSheet(context: Context) : ViewGroup(context), LifecycleEventListe
         dismissable = dismissable,
         sheetBackgroundColor = backgroundColor,
         isDark = isDark,
-        handleRadius = topLeftRightCornerRadius ?: 0F
+        isStatusBarBgLight = isStatusBarBgLight,
+        handleRadius = topLeftRightCornerRadius ?: 0F,
       ) {
         println("😀 onDismiss")
         val parent = mHostView.parent as? ViewGroup
