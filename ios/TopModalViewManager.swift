@@ -77,6 +77,13 @@ class TopModalView: RCTView {
         _alertWindow?.windowLevel = UIWindow.Level.alert
         _alertWindow?.isHidden = false
         viewController.modalPresentationStyle = .fullScreen
+
+        if (animationType == "fade") {
+          viewController.modalTransitionStyle = .crossDissolve
+        } else if (animationType == "slide") {
+          viewController.modalTransitionStyle = .coverVertical
+        }
+
         viewController.view.backgroundColor = .clear
         return controller
     }()
@@ -85,6 +92,9 @@ class TopModalView: RCTView {
     private var onModalDismiss: RCTDirectEventBlock?
     @objc
     private var animated: Bool = true
+    /// objc doesn't support String Enums
+    @objc
+    private var animationType = "slide"
 
     init(bridge: RCTBridge) {
         self._bridge = bridge

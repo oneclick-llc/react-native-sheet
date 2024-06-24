@@ -13,6 +13,8 @@ interface Props {
   onModalDismiss?: () => void;
   children: React.ReactNode;
   animated?: boolean
+  /** @default "slide" */
+  animationType?: "slide" | "fade"
 }
 
 interface State {
@@ -60,7 +62,12 @@ export class TopModal extends React.PureComponent<Props, State> {
       return null;
     }
     return (
-      <TopModalView onModalDismiss={this.onDismiss} ref={this.sheetRef} animated={this.props.animated ?? true}>
+      <TopModalView
+        ref={this.sheetRef}
+        onModalDismiss={this.onDismiss}
+        animated={this.props.animated ?? true}
+        animationType={this.props.animationType ?? "slide"}
+      >
         <View
           accessibilityLabel={'top-modal-root-view'}
           nativeID={'top-modal-root-view'}
