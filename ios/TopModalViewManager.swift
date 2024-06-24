@@ -147,7 +147,7 @@ class TopModalView: RCTView {
     }
 
     func dismissVC() {
-        self.viewController.dismiss(animated: true) {
+      self.viewController.dismiss(animated: self.animated) {
             debugPrint("😀 dismissVC \(self.onModalDismiss)")
             self.onModalDismiss?([:])
         }
@@ -172,7 +172,7 @@ class TopModalView: RCTView {
 
         if self.viewController.isBeingDismissed != true {
             debugPrint("😀dismissViewController")
-            self.viewController.dismiss(animated: true, completion: cleanup)
+            self.viewController.dismiss(animated: self.animated, completion: cleanup)
         } else {
             cleanup()
         }
