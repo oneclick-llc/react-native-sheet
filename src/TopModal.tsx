@@ -12,6 +12,18 @@ const TopModalView = requireNativeComponent<any>('TopModalView');
 interface Props {
   onModalDismiss?: () => void;
   children: React.ReactNode;
+
+  /**
+   * @default false
+   * @platform Android
+   */
+  isEdgeToEdge?: boolean
+  /**
+   * @default false
+   * @platform Android
+   */
+  isStatusBarBgLight?: boolean
+
   animated?: boolean
   /** @default "slide" */
   animationType?: "slide" | "fade"
@@ -67,7 +79,8 @@ export class TopModal extends React.PureComponent<Props, State> {
         onModalDismiss={this.onDismiss}
         animated={this.props.animated ?? true}
         animationType={this.props.animationType ?? "slide"}
-      >
+        isEdgeToEdge={this.props.isEdgeToEdge ?? false}
+        isStatusBarBgLight={this.props.isStatusBarBgLight ?? false}>
         <View
           accessibilityLabel={'top-modal-root-view'}
           nativeID={'top-modal-root-view'}
