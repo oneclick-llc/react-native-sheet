@@ -26,8 +26,10 @@ export interface FittedSheetParams {
   backgroundColor?: string;
   /**
    * Android only
+   *
+   * Affects Navigation Bar Icons Colors
    */
-  isSystemUILight?: boolean;
+  isContentBackgroundLight: boolean;
 }
 
 type Children =
@@ -36,7 +38,7 @@ type Children =
   | React.ReactElement[];
 
 export interface SheetProps {
-  params?: FittedSheetParams;
+  params: FittedSheetParams;
   onSheetDismiss?: (passThroughParam?: any) => void;
   children?: Children;
   rootViewStyle?: StyleProp<ViewStyle>;
@@ -205,7 +207,7 @@ export class PrivateFittedSheet extends React.PureComponent<SheetProps, State> {
           topLeftRightCornerRadius={
             this.props.params?.topLeftRightCornerRadius ?? 20
           }
-          isSystemUILight={this.props.params?.isSystemUILight ?? true}
+          isSystemUILight={this.props.params.isContentBackgroundLight}
           calculatedHeight={nativeHeight}
           passScrollViewReactTag={this.state.passScrollViewReactTag}
         >

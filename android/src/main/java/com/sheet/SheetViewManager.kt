@@ -9,6 +9,7 @@ import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.UIManagerHelper
 import com.facebook.react.uimanager.ViewGroupManager
 import com.facebook.react.uimanager.ViewManagerDelegate
+import com.facebook.react.uimanager.annotations.ReactProp
 import com.facebook.react.viewmanagers.SheetViewManagerDelegate
 import com.facebook.react.viewmanagers.SheetViewManagerInterface
 
@@ -68,8 +69,8 @@ class SheetViewManager(reactContext: ReactApplicationContext) : ViewGroupManager
   }
 
   override fun setIsSystemUILight(view: SheetView, value: Boolean) {
-    println("==========setIsSystemUILight $value")
-    view.isSystemUILight = value
+    println("SheetViewManager.setIsSystemUILight(..., value: $value) | setIsSheetContentBackgroundLight")
+    view.isSheetContentBackgroundLight = value
   }
 
   override fun setPassScrollViewReactTag(view: SheetView, value: String?) {

@@ -41,7 +41,7 @@ open class AppFittedSheet(context: Context) : ViewGroup(context), LifecycleEvent
   var dismissable = true
   var topLeftRightCornerRadius: Float = 0F
   var _backgroundColor: Int = Color.TRANSPARENT
-  var isSystemUILight: Boolean = false
+  var isSheetContentBackgroundLight = false
 
   var maxWidth: Float = 0F
     set(value) {
@@ -92,7 +92,7 @@ open class AppFittedSheet(context: Context) : ViewGroup(context), LifecycleEvent
       val fragment = FragmentModalBottomSheet(
         modalView = mHostView,
         dismissable = dismissable,
-        isSystemUILight = isSystemUILight
+        isContentBackgroundLight = isSheetContentBackgroundLight
       ) { dismissAll ->
         println("😀 onDismiss")
         val parent = mHostView.parent as? ViewGroup

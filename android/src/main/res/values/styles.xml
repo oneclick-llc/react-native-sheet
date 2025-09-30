@@ -11,6 +11,8 @@
     <item name="statusBarBackground">@android:color/transparent</item>
     <item name="android:statusBarColor">@android:color/transparent</item>
     <item name="android:windowSoftInputMode">adjustNothing</item>
+    <item name="paddingBottomSystemWindowInsets">false</item>
+    <item name="android:navigationBarColor">@color/transparent</item>
   </style>
 
   <style name="AppBottomSheetDialog.Dark">
