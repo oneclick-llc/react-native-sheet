@@ -6,6 +6,7 @@ import type {
 
 export interface Spec extends TurboModule {
   getConstants: () => {
+    // todo: remove
     insets: UnsafeObject;
   };
 
