@@ -117,10 +117,6 @@ export class PrivateFittedSheet extends React.PureComponent<SheetProps, State> {
     this.props.onSheetDismiss?.(passValue);
   };
 
-  private insets(): { top: number; bottom: number } {
-    return (SheetModule.getConstants().insets as any) ?? { top: 0, bottom: 0 };
-  }
-
   componentDidMount() {
     this.log('componentDidMount');
     this.cleanup = Dimensions.addEventListener('change', () => {
@@ -152,7 +148,7 @@ export class PrivateFittedSheet extends React.PureComponent<SheetProps, State> {
     if (!this.state.show) return null;
     let maxHeight = Math.min(
       this.props.params?.maxHeight ?? Number.MAX_VALUE,
-      this.dimensions.height - this.insets().top - this.insets().bottom
+      this.dimensions.height
     );
     const paramsMaxWidth = this.state.isLandscape
       ? this.props.params?.maxLandscapeWidth
