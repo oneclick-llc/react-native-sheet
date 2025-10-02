@@ -8,10 +8,10 @@ import {
   View,
   type ViewStyle,
 } from 'react-native';
+import { Portal } from '@gorhom/portal';
 
 import She, { Commands } from './SheetViewNativeComponent';
 import SheetModule from './NativeSheet';
-import { Portal } from '@gorhom/portal';
 
 const _FittedSheet = She;
 
