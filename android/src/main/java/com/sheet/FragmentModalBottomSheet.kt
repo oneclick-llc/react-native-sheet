@@ -5,6 +5,7 @@ import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,12 +15,20 @@ import androidx.core.view.WindowInsetsControllerCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.lang.ref.WeakReference
 
+// Empty Constructor is required for Fragment Recreation,
+// see https://oneclicklife.youtrack.cloud/issue/Looky-8019/Krash-iz-metriki-NoSuchMethodException-at-RNScreensFragmentFactory
 class FragmentModalBottomSheet(
-  private val modalView: ViewGroup,
-  private val dismissable: Boolean,
+  private val modalView: ViewGroup? = null,
+  private val dismissable: Boolean = true,
   private val isContentBackgroundLight: Boolean = true,
-  private val onDismiss: (dismissAll: Boolean) -> Unit
+  private val onDismiss: (dismissAll: Boolean) -> Unit = {},
 ) : BottomSheetDialogFragment() {
+  init {
+    Log.d(
+      "com.sheet",
+      "FragmentModalBottomSheet.Init | isModalViewDefined: ${modalView != null}, dismissable: $dismissable, isContentBackgroundLight: $isContentBackgroundLight, onDismiss: $onDismiss"
+    )
+  }
 
   var dismissAll = false
 
@@ -31,7 +40,7 @@ class FragmentModalBottomSheet(
     inflater: LayoutInflater,
     container: ViewGroup?,
     savedInstanceState: Bundle?
-  ): View = modalView
+  ): View? = modalView
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     this.isCancelable = dismissable
