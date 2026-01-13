@@ -29,7 +29,8 @@ private fun AppFittedSheet.log(message: String) = debugLog { "$message | id: $id
 
 internal fun AppFittedSheet.onSheetDismiss() {
   log("onSheetDismiss()")
-  val reactEventDispatcher = UIManagerHelper.getEventDispatcherForReactTag(context as ReactContext, id)
+  val reactEventDispatcher =
+    UIManagerHelper.getEventDispatcherForReactTag(context as ReactContext, id)
   val surfaceId = UIManagerHelper.getSurfaceId(context)
   reactEventDispatcher?.dispatchEvent(SheetDismissEvent(surfaceId, id))
 }
@@ -193,6 +194,7 @@ open class AppFittedSheet(context: Context) : ViewGroup(context), LifecycleEvent
     UiThreadUtil.assertOnUiThread()
     this.sheet?.dismissAllowingStateLoss()
   }
+
   override fun addChildrenForAccessibility(outChildren: ArrayList<View?>?) {}
 
   override fun dispatchPopulateAccessibilityEvent(event: AccessibilityEvent?) = false
@@ -200,6 +202,7 @@ open class AppFittedSheet(context: Context) : ViewGroup(context), LifecycleEvent
     log("onHostResume()")
     showOrUpdate()
   }
+
   override fun onHostPause() {
     log("onHostPause()")
   }

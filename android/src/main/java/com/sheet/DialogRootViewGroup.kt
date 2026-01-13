@@ -3,14 +3,9 @@ package com.sheet
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Outline
-import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.view.ViewOutlineProvider
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import com.facebook.react.bridge.ReactContext
-import com.facebook.react.uimanager.PixelUtil
 import com.facebook.react.uimanager.PixelUtil.pxToDp
 import kotlin.math.max
 import kotlin.math.min

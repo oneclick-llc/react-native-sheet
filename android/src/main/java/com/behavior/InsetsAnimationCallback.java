@@ -17,11 +17,14 @@
 package com.behavior;
 
 import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.core.view.WindowInsetsAnimationCompat;
 import androidx.core.view.WindowInsetsAnimationCompat.BoundsCompat;
 import androidx.core.view.WindowInsetsCompat;
+
 import com.google.android.material.animation.AnimationUtils;
+
 import java.util.List;
 
 class InsetsAnimationCallback extends WindowInsetsAnimationCompat.Callback {

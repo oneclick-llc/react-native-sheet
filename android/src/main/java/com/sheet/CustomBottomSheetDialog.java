@@ -52,6 +52,7 @@ public class CustomBottomSheetDialog extends AppCompatDialog {
     if (contentContainer == null) return;
     contentContainer.setBackgroundColor(sheetBackgroundColor);
   }
+
   public ViewGroup getContainerView() {
     ensureContainerAndBehavior();
     return container;
@@ -221,7 +222,9 @@ public class CustomBottomSheetDialog extends AppCompatDialog {
     coordinator
       .findViewById(R.id.touch_outside)
       .setOnClickListener(
-        view12 -> {if (cancelable && isShowing()) cancel();});
+        view12 -> {
+          if (cancelable && isShowing()) cancel();
+        });
     // Handle accessibility events
     bottomSheet.setOnTouchListener((view1, event) -> true);
     return container;

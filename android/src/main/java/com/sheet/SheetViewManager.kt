@@ -1,7 +1,6 @@
 package com.sheet
 
 import android.graphics.Color
-import android.util.Log
 import com.behavior.BottomSheetBehavior
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.module.annotations.ReactModule
@@ -10,14 +9,14 @@ import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.UIManagerHelper
 import com.facebook.react.uimanager.ViewGroupManager
 import com.facebook.react.uimanager.ViewManagerDelegate
-import com.facebook.react.uimanager.annotations.ReactProp
 import com.facebook.react.viewmanagers.SheetViewManagerDelegate
 import com.facebook.react.viewmanagers.SheetViewManagerInterface
 
 private val debugLog = LogFactory("SheetViewManager")
 
 @ReactModule(name = SheetViewManager.NAME)
-class SheetViewManager(reactContext: ReactApplicationContext) : ViewGroupManager<SheetView>(reactContext),
+class SheetViewManager(reactContext: ReactApplicationContext) :
+  ViewGroupManager<SheetView>(reactContext),
   SheetViewManagerInterface<SheetView> {
   private val mDelegate: ViewManagerDelegate<SheetView>
 
@@ -68,7 +67,7 @@ class SheetViewManager(reactContext: ReactApplicationContext) : ViewGroupManager
   }
 
   override fun setTopLeftRightCornerRadius(view: SheetView, value: Double) {
-    debugLog{"setTopLeftRightCornerRadius(view.id: ${view.id}, value: $value)"}
+    debugLog { "setTopLeftRightCornerRadius(view.id: ${view.id}, value: $value)" }
     view.topLeftRightCornerRadius = value.dpToPx()
   }
 

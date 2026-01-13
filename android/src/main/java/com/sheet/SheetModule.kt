@@ -17,7 +17,8 @@ class SheetModule(reactContext: ReactApplicationContext) : NativeSheetSpec(react
 
   private fun getInitialWindowMetrics(): Map<String, Any> {
     debugLog { "getInitialWindowMetrics()" }
-    val decorView = reactApplicationContext.currentActivity?.window?.decorView as ViewGroup? ?: return emptyMap()
+    val decorView =
+      reactApplicationContext.currentActivity?.window?.decorView as ViewGroup? ?: return emptyMap()
     val insets = getSafeAreaInsets(decorView)
     return if (insets == null) {
       emptyMap()
