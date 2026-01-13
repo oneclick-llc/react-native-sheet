@@ -6,12 +6,17 @@ import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.WritableMap
 
+private var debugLog = LogFactory("SheetModule")
+
 class SheetModule(reactContext: ReactApplicationContext) : NativeSheetSpec(reactContext) {
   override fun getTypedExportedConstants(): Map<String, Any> {
-    return getInitialWindowMetrics()
+    val res = getInitialWindowMetrics()
+    debugLog { "getTypedExportedConstants() | res: $res" }
+    return res
   }
 
   private fun getInitialWindowMetrics(): Map<String, Any> {
+    debugLog { "getInitialWindowMetrics()" }
     val decorView = reactApplicationContext.currentActivity?.window?.decorView as ViewGroup? ?: return emptyMap()
     val insets = getSafeAreaInsets(decorView)
     return if (insets == null) {
@@ -24,12 +29,14 @@ class SheetModule(reactContext: ReactApplicationContext) : NativeSheetSpec(react
   }
 
   override fun dismissAll() {
+    debugLog { "dismissAll()" }
     reactApplicationContext.runOnUiQueueThread {
       reactApplicationContext.currentActivity?.let { AppFittedSheet.dismissAll(it as AppCompatActivity) }
     }
   }
 
   override fun dismissPresented() {
+    debugLog { "dismissPresented()" }
     reactApplicationContext.runOnUiQueueThread {
       reactApplicationContext.currentActivity?.let { AppFittedSheet.dismissPresented(it as AppCompatActivity) }
     }

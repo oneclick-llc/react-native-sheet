@@ -1,6 +1,9 @@
 package com.sheet;
 
+import static com.sheet.LogFactoryKt.LOG_TAG;
+
 import android.annotation.SuppressLint;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +19,10 @@ import androidx.appcompat.app.AppCompatDialog;
 import com.behavior.BottomSheetBehavior;
 
 public class CustomBottomSheetDialog extends AppCompatDialog {
+  private void log(String message) {
+    Log.d(LOG_TAG, "CustomBottomSheetDialog." + message);
+  }
+
   private BottomSheetBehavior<FrameLayout> behavior;
   private FrameLayout container;
   boolean dismissWithAnimation;
@@ -24,18 +31,22 @@ public class CustomBottomSheetDialog extends AppCompatDialog {
   protected int startState = BottomSheetBehavior.STATE_EXPANDED;
 
   public void setNewNestedScrollView(View view) {
+    log("setNewNestedScrollView(view.id: " + view.getId() + ")");
     behavior.setNewNestedScrollView(view);
   }
 
   public void collapse() {
+    log("collapse()");
     behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
   }
 
   public void expand() {
+    log("expand()");
     behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
   }
 
   public void setSheetBackgroundColor(int sheetBackgroundColor) {
+    log("setSheetBackgroundColor(" + sheetBackgroundColor + ")");
     ViewGroup contentContainer = getContentContainer();
     if (contentContainer == null) return;
     contentContainer.setBackgroundColor(sheetBackgroundColor);
@@ -69,11 +80,13 @@ public class CustomBottomSheetDialog extends AppCompatDialog {
 
   @Override
   public void setContentView(@LayoutRes int layoutResId) {
+    log("setContentView(...)");
     super.setContentView(wrapInBottomSheet(layoutResId, null, null));
   }
 
   @Override
   protected void onCreate(android.os.Bundle savedInstanceState) {
+    log("onCreate(...)");
     super.onCreate(savedInstanceState);
     android.view.Window window = getWindow();
     if (window != null) {
@@ -85,17 +98,20 @@ public class CustomBottomSheetDialog extends AppCompatDialog {
 
   @Override
   public void setContentView(View view) {
+    log("setContentView(view.id: " + view.getId() + ")");
     super.setContentView(wrapInBottomSheet(0, view, null));
     setup();
   }
 
   @Override
   public void setContentView(View view, ViewGroup.LayoutParams params) {
+    log("setContentView(view.id: " + view.getId() + ", params: " + params + ")");
     super.setContentView(wrapInBottomSheet(0, view, params));
   }
 
   @Override
   public void setCancelable(boolean cancelable) {
+    log("setCancelable(" + cancelable + ")");
     super.setCancelable(cancelable);
     if (this.cancelable != cancelable) {
       this.cancelable = cancelable;
@@ -107,6 +123,7 @@ public class CustomBottomSheetDialog extends AppCompatDialog {
   }
 
   private void setup() {
+    log("setup()");
     behavior.setPeekHeight(10, true);
     behavior.setSkipCollapsed(true);
     startState = BottomSheetBehavior.STATE_EXPANDED;
@@ -114,6 +131,7 @@ public class CustomBottomSheetDialog extends AppCompatDialog {
 
   @Override
   protected void onStart() {
+    log("onStart()");
     super.onStart();
     if (behavior != null && behavior.getState() == BottomSheetBehavior.STATE_HIDDEN) {
       behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -157,6 +175,7 @@ public class CustomBottomSheetDialog extends AppCompatDialog {
    * Creates the container layout which must exist to find the behavior
    */
   private FrameLayout ensureContainerAndBehavior() {
+    log("ensureContainerAndBehavior()");
     if (container == null) {
       container =
         (FrameLayout) View.inflate(getContext(), getDialogLayout(), null);
@@ -216,6 +235,7 @@ public class CustomBottomSheetDialog extends AppCompatDialog {
       @Override
       public void onStateChanged(
         @NonNull View bottomSheet, @BottomSheetBehavior.State int newState) {
+        log("onStateChange(bottomSheet.id: " + bottomSheet.getId() + ", newState: " + newState + ")");
         if (newState == BottomSheetBehavior.STATE_HIDDEN) {
           cancel();
         }
@@ -223,6 +243,7 @@ public class CustomBottomSheetDialog extends AppCompatDialog {
 
       @Override
       public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+        log("onSlide(bottomSheet.id: " + bottomSheet.getId() + ", slideOffset: " + slideOffset + ")");
       }
     };
 }

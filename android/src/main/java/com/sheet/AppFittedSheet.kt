@@ -24,7 +24,11 @@ fun Fragment.safeShow(
   ft.commitNowAllowingStateLoss()
 }
 
+private val debugLog = LogFactory("AppFittedSheet")
+private fun AppFittedSheet.log(message: String) = debugLog { "$message | id: $id" }
+
 internal fun AppFittedSheet.onSheetDismiss() {
+  log("onSheetDismiss()")
   val reactEventDispatcher = UIManagerHelper.getEventDispatcherForReactTag(context as ReactContext, id)
   val surfaceId = UIManagerHelper.getSurfaceId(context)
   reactEventDispatcher?.dispatchEvent(SheetDismissEvent(surfaceId, id))
@@ -45,6 +49,7 @@ open class AppFittedSheet(context: Context) : ViewGroup(context), LifecycleEvent
 
   var maxWidth: Float = 0F
     set(value) {
+      log("maxWidth.set(value: $value) | prev: $field")
       field = value
       mHostView.sheetMaxWidthSize = value
       if (this.sheet == null) return
@@ -69,14 +74,14 @@ open class AppFittedSheet(context: Context) : ViewGroup(context), LifecycleEvent
     get() = findSheet(fragmentTag)
 
   override fun setId(id: Int) {
+    log("setId($id)")
     super.setId(id)
-    println("👀 setId $id")
     // Forward the ID to our content view, so event dispatching behaves correctly
     mHostView.id = id
   }
 
   fun showOrUpdate() {
-    println("🥲 showOrUpdate")
+    log("showOrUpdate()")
     UiThreadUtil.assertOnUiThread()
 
     val sheet = this.sheet
@@ -94,12 +99,13 @@ open class AppFittedSheet(context: Context) : ViewGroup(context), LifecycleEvent
         dismissable = dismissable,
         isContentBackgroundLight = isSheetContentBackgroundLight
       ) { dismissAll ->
-        println("😀 onDismiss")
+        val logTag = "FragmentModalBottomSheet.onDismiss(dismissAll: $dismissAll)"
+        log(logTag)
         val parent = mHostView.parent as? ViewGroup
         parent?.removeViewAt(0)
         onSheetDismiss()
         if (dismissAll) {
-          println("😁 dismissingSilently ${presentedSheets.size}")
+          log("$logTag | dismissingSilently | presentedSheets.size: ${presentedSheets.size}")
           if (stacked) {
             var lastName = presentedSheets.removeLastOrNull()
             if (lastName == fragmentTag) lastName = presentedSheets.lastOrNull()
@@ -118,13 +124,14 @@ open class AppFittedSheet(context: Context) : ViewGroup(context), LifecycleEvent
             lastName = presentedSheets.lastOrNull()
           }
           lastName?.let { findSheet(it)?.expand() }
-          println("👀 Dismiss ${presentedSheets.size}")
+          log("$logTag | dismiss | presentedSheets.size: ${presentedSheets.size}")
         }
       }
+
       getCurrentActivity()?.supportFragmentManager?.let {
         fragment.safeShow(it, fragmentTag)
         if (stacked) {
-          println("👀 Show ${presentedSheets.size} name: $fragmentTag")
+          log("show | presentedSheets.size: ${presentedSheets.size}, fragmentTag: $fragmentTag")
           if (presentedSheets.contains(fragmentTag)) return
           presentedSheets.add(fragmentTag)
         }
@@ -133,6 +140,7 @@ open class AppFittedSheet(context: Context) : ViewGroup(context), LifecycleEvent
   }
 
   fun setNewNestedScrollView(view: View) {
+    log("setNewNestedScrollView(view.id: ${view.id})")
     sheet?.setNewNestedScrollView(view)
   }
 
@@ -141,7 +149,7 @@ open class AppFittedSheet(context: Context) : ViewGroup(context), LifecycleEvent
   }
 
   override fun addView(child: View, index: Int) {
-    println("🥲 addView parentId: $id id: ${child.id}")
+    log("addView(child.id: ${child.id}, index: $index)")
     UiThreadUtil.assertOnUiThread()
     mHostView.addView(child, index)
 //    val ctx = context as ReactContext? ?: return
@@ -158,45 +166,56 @@ open class AppFittedSheet(context: Context) : ViewGroup(context), LifecycleEvent
   override fun getChildAt(index: Int): View? = mHostView.getChildAt(index)
 
   override fun removeView(child: View) {
-    println("🥲 removeView id: ${child.id}")
+    log("removeView(childId: ${child.id})")
     UiThreadUtil.assertOnUiThread()
     dismiss()
   }
 
   override fun onDetachedFromWindow() {
+    log("onDetachedFromWindow()")
     super.onDetachedFromWindow()
-    println("🥲 onDetachedFromWindow: $id")
   }
 
   override fun removeViewAt(index: Int) {
-    println("🥲 removeViewAt: $index id: ${mHostView.getChildAt(index).id}")
+    log("removeViewAt(index: $index) | viewToRemoveId: ${mHostView.getChildAt(index).id}")
     UiThreadUtil.assertOnUiThread()
     dismiss()
   }
 
   private fun onDropInstance() {
-    println("🥲 onDropInstance")
+    log("onDropInstance()")
     (context as ReactContext).removeLifecycleEventListener(this)
     dismiss()
   }
 
   fun dismiss() {
-    println("🥲 dismiss")
+    log("dismiss()")
     UiThreadUtil.assertOnUiThread()
     this.sheet?.dismissAllowingStateLoss()
   }
   override fun addChildrenForAccessibility(outChildren: ArrayList<View?>?) {}
 
   override fun dispatchPopulateAccessibilityEvent(event: AccessibilityEvent?) = false
-  override fun onHostResume() { showOrUpdate() }
-  override fun onHostPause() {}
+  override fun onHostResume() {
+    log("onHostResume()")
+    showOrUpdate()
+  }
+  override fun onHostPause() {
+    log("onHostPause()")
+  }
 
-  override fun onHostDestroy() { onDropInstance() }
+  override fun onHostDestroy() {
+    log("onHostDestroy")
+    onDropInstance()
+  }
 
-  override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {}
+  override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+    log("onLayout(changed: $changed, l: $l, t: $t, r: $r, b: $b)")
+  }
 
   companion object {
     fun dismissAll(activity: AppCompatActivity) {
+      debugLog { "Companion.dismissAll(...)" }
       val fragment = activity.supportFragmentManager.fragments.lastOrNull()
       if (fragment is FragmentModalBottomSheet) {
         fragment.dismissAll = true
@@ -205,6 +224,7 @@ open class AppFittedSheet(context: Context) : ViewGroup(context), LifecycleEvent
     }
 
     fun dismissPresented(activity: AppCompatActivity) {
+      debugLog { "Companion.dismissPresented(...)" }
       val fragment = activity.supportFragmentManager.fragments.lastOrNull()
       if (fragment is FragmentModalBottomSheet) {
         fragment.dismissAllowingStateLoss()

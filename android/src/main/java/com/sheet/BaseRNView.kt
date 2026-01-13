@@ -20,6 +20,9 @@ import com.facebook.react.uimanager.UIManagerModule
 import com.facebook.react.uimanager.events.EventDispatcher
 import com.facebook.react.views.view.ReactViewGroup
 
+private val debugLog = LogFactory("BaseRNView")
+private fun BaseRNView.log(message: String) = debugLog { "$message | id: $id" }
+
 open class BaseRNView(context: Context?) : ReactViewGroup(context), RootView {
   internal var stateWrapper: StateWrapper? = null
   internal var eventDispatcher: EventDispatcher? = null
@@ -43,6 +46,7 @@ open class BaseRNView(context: Context?) : ReactViewGroup(context), RootView {
   }
 
   override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+    log("onSizeChanged(w: $w, h: $h, oldW: $oldw, oldH: $oldh)")
     super.onSizeChanged(w, h, oldw, oldh)
     viewWidth = w
     viewHeight = h
@@ -54,6 +58,7 @@ open class BaseRNView(context: Context?) : ReactViewGroup(context), RootView {
   public fun updateState(width: Int, height: Int) {
     val realWidth: Float = width.toFloat().pxToDp()
     val realHeight: Float = height.toFloat().pxToDp()
+    log("updateState(width: $width, height: $height) | realWidth: $realWidth, realHeight: $realHeight")
 
     stateWrapper?.let { sw ->
       // new architecture
@@ -81,6 +86,7 @@ open class BaseRNView(context: Context?) : ReactViewGroup(context), RootView {
   }
 
   override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
+    log("onInterceptTouchEvent(event: $event)")
     eventDispatcher?.let { eventDispatcher ->
       jSTouchDispatcher.handleTouchEvent(event, eventDispatcher, reactContext)
       jSPointerDispatcher?.handleMotionEvent(event, eventDispatcher, true)
@@ -90,6 +96,7 @@ open class BaseRNView(context: Context?) : ReactViewGroup(context), RootView {
 
   @SuppressLint("ClickableViewAccessibility")
   override fun onTouchEvent(event: MotionEvent): Boolean {
+    log("onTouchEvent(event: $event)")
     eventDispatcher?.let { eventDispatcher ->
       jSTouchDispatcher.handleTouchEvent(event, eventDispatcher, reactContext)
       jSPointerDispatcher?.handleMotionEvent(event, eventDispatcher, false)
@@ -101,7 +108,7 @@ open class BaseRNView(context: Context?) : ReactViewGroup(context), RootView {
   }
 
   override fun onChildStartedNativeGesture(childView: View?, ev: MotionEvent) {
-    println("🐣 onChildStartedNativeGesture")
+    log("onChildStartedNativeGesture(childView.id: ${childView?.id}, event: $ev)")
     eventDispatcher?.let { eventDispatcher ->
       jSTouchDispatcher.onChildStartedNativeGesture(ev, eventDispatcher)
       jSPointerDispatcher?.onChildStartedNativeGesture(childView, ev, eventDispatcher)
@@ -109,7 +116,7 @@ open class BaseRNView(context: Context?) : ReactViewGroup(context), RootView {
   }
 
   override fun onChildEndedNativeGesture(childView: View, ev: MotionEvent) {
-    println("🐣 onChildEndedNativeGesture")
+    log("onChildEndedNativeGesture(childView.id: ${childView.id}, event: $ev)")
     eventDispatcher?.let { jSTouchDispatcher.onChildEndedNativeGesture(ev, it) }
     jSPointerDispatcher?.onChildEndedNativeGesture()
   }
