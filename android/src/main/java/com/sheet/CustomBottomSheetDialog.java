@@ -7,6 +7,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
 import androidx.annotation.IdRes;
@@ -153,6 +154,17 @@ public class CustomBottomSheetDialog extends AppCompatDialog {
    */
   @Override
   public void cancel() {
+    View focusedView = this.getCurrentFocus();
+
+    log("cancel() | focusedView: " + focusedView);
+    InputMethodManager inputMethodManager = getContext().getSystemService(InputMethodManager.class);
+    if (inputMethodManager != null && focusedView != null) {
+      inputMethodManager.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
+      log("cleared focus to eliminate keyboard flickers");
+    } else {
+      log("couldn't clear focus");
+    }
+
     BottomSheetBehavior<FrameLayout> behavior = getBehavior();
 
     if (!dismissWithAnimation || behavior.getState() == BottomSheetBehavior.STATE_HIDDEN) {
