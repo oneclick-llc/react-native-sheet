@@ -8,7 +8,6 @@ import android.view.Window
 import android.view.WindowInsetsController
 import androidx.core.graphics.toColorInt
 import com.facebook.react.bridge.ReadableMap
-import com.facebook.react.uimanager.PixelUtil
 
 
 fun ReadableMap?.bool(value: String, default: Boolean): Boolean {

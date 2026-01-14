@@ -5,7 +5,6 @@ import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +14,8 @@ import androidx.core.view.WindowInsetsControllerCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.lang.ref.WeakReference
 
+private val debugLog = LogFactory("FragmentModalBottomSheet")
+
 // Empty Constructor is required for Fragment Recreation,
 // see https://oneclicklife.youtrack.cloud/issue/Looky-8019/Krash-iz-metriki-NoSuchMethodException-at-RNScreensFragmentFactory
 class FragmentModalBottomSheet(
@@ -23,11 +24,10 @@ class FragmentModalBottomSheet(
   private val isContentBackgroundLight: Boolean = true,
   private val onDismiss: (dismissAll: Boolean) -> Unit = {},
 ) : BottomSheetDialogFragment() {
+  private fun log(message: String) = debugLog { "$message | id: $id" }
+
   init {
-    Log.d(
-      "com.sheet",
-      "FragmentModalBottomSheet.Init | isModalViewDefined: ${modalView != null}, dismissable: $dismissable, isContentBackgroundLight: $isContentBackgroundLight, onDismiss: $onDismiss"
-    )
+    log("init() | isModalViewDefined: ${modalView != null}, dismissable: $dismissable, isContentBackgroundLight: $isContentBackgroundLight, isOnDismissDefined: ${onDismiss != null}")
   }
 
   var dismissAll = false
@@ -40,13 +40,18 @@ class FragmentModalBottomSheet(
     inflater: LayoutInflater,
     container: ViewGroup?,
     savedInstanceState: Bundle?
-  ): View? = modalView
+  ): View? {
+    log("onCreateView(...)")
+    return modalView
+  }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+    log("onCreateDialog(...)")
     this.isCancelable = dismissable
 
     val dialog = object : CustomBottomSheetDialog(requireContext(), R.style.AppBottomSheetDialog) {
       override fun onAttachedToWindow() {
+        log("CustomBottomSheetDialog.onAttachedToWindow()")
         super.onAttachedToWindow()
 
         window?.let {
@@ -67,6 +72,12 @@ class FragmentModalBottomSheet(
           fitsSystemWindows = false
         }
       }
+
+      override fun onDetachedFromWindow() {
+        log("CustomBottomSheetDialog.onDetachedFromWindow()")
+
+        super.onDetachedFromWindow()
+      }
     }
     dialog.setSheetBackgroundColor(Color.TRANSPARENT)
 
@@ -74,18 +85,27 @@ class FragmentModalBottomSheet(
   }
 
   fun setNewNestedScrollView(view: View) {
+    log("setNewNestedScrollView(view.id: ${view.id})")
     (dialog as CustomBottomSheetDialog).setNewNestedScrollView(view)
   }
 
   fun collapse() {
+    log("collapse()")
     (dialog as CustomBottomSheetDialog).collapse()
   }
 
   fun expand() {
+    log("expand()")
     (dialog as CustomBottomSheetDialog).expand()
   }
 
+  override fun onCancel(dialog: DialogInterface) {
+    log("onCancel(dialog: $dialog)")
+    super.onCancel(dialog)
+  }
+
   override fun onDismiss(dialog: DialogInterface) {
+    log("onDismiss(...)")
     super.onDismiss(dialog)
     presentedWindow?.clear()
     presentedWindow = null

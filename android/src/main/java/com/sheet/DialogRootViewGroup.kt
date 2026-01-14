@@ -6,13 +6,12 @@ import android.graphics.Outline
 import android.os.Looper
 import android.view.View
 import android.view.ViewOutlineProvider
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import com.facebook.react.bridge.ReactContext
-import com.facebook.react.uimanager.PixelUtil
 import com.facebook.react.uimanager.PixelUtil.pxToDp
 import kotlin.math.max
 import kotlin.math.min
+
+private val debugLog = LogFactory("DialogRootViewGroup")
+private fun DialogRootViewGroup.logWithId(message: String) = debugLog { "$message | id: $id" }
 
 class DialogRootViewGroup(context: Context) : BaseRNView(context) {
   private var reactView: View? = null
@@ -24,6 +23,7 @@ class DialogRootViewGroup(context: Context) : BaseRNView(context) {
   private val metrics: Resources by lazy { Resources.getSystem() }
 
   fun setCornerRadius(r: Float) {
+    logWithId("setCornerRadius($r)")
     setOutlineProvider(object : ViewOutlineProvider() {
       override fun getOutline(view: View, outline: Outline) {
         val left = 0
@@ -53,6 +53,7 @@ class DialogRootViewGroup(context: Context) : BaseRNView(context) {
   }
 
   private fun layout() {
+    logWithId("layout()")
     if (Looper.myLooper() == Looper.getMainLooper()) {
       parent?.requestLayout()
     } else {
@@ -61,12 +62,13 @@ class DialogRootViewGroup(context: Context) : BaseRNView(context) {
   }
 
   fun setVirtualHeight(h: Float) {
+    logWithId("setVirtualHeight($h) | reactViewIsNotNull: ${reactView != null}")
     if (reactView == null) return
     this.sheetMaxHeightSize = h
     if (sheetMaxHeightSize == Float.MAX_VALUE) return
     val newHeight = allowedHeight
     val newWidth = allowedWidth
-    println("😀 DialogRootViewGroup.setVirtualHeight ${newHeight.pxToDp()} :${newWidth.pxToDp()}")
+    logWithId("setVirtualHeight($h) | newHeightDp: ${newHeight.pxToDp()}, newWidthDp: ${newWidth.pxToDp()}")
     ensureLayoutParams()
     layoutParams?.height = newHeight
     translationX = ((metrics.displayMetrics.widthPixels - newWidth) / 2).toFloat()
@@ -75,6 +77,7 @@ class DialogRootViewGroup(context: Context) : BaseRNView(context) {
   }
 
   fun updateMaxWidth(value: Float) {
+    logWithId("updateMaxWidth($value)")
     sheetMaxWidthSize = value
     val newWidth = allowedWidth
     translationX = ((metrics.displayMetrics.widthPixels - newWidth) / 2).toFloat()
@@ -83,7 +86,7 @@ class DialogRootViewGroup(context: Context) : BaseRNView(context) {
   }
 
   override fun addView(child: View, index: Int, params: LayoutParams) {
-    println("😀 DialogRootViewGroup.addView ${child.id}")
+    logWithId("addView(child.id: ${child.id}, index: $index, layoutParams: $params)")
     if (reactView != null) removeView(reactView)
     super.addView(child, index, params)
     reactView = child
@@ -91,11 +94,13 @@ class DialogRootViewGroup(context: Context) : BaseRNView(context) {
   }
 
   override fun removeView(view: View?) {
+    logWithId("removeView(view.id: ${view?.id})")
     if (view == reactView) releaseReactView()
     super.removeView(view)
   }
 
   override fun removeViewAt(index: Int) {
+    logWithId("removeViewAt(index: $index)")
     if (getChildAt(index) === reactView) releaseReactView()
     super.removeViewAt(index)
   }
@@ -103,6 +108,7 @@ class DialogRootViewGroup(context: Context) : BaseRNView(context) {
   override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {}
 
   private fun releaseReactView() {
+    logWithId("releaseReactView()")
     sheetMaxHeightSize = Float.MAX_VALUE
     reactView = null
   }
