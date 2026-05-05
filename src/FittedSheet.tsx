@@ -8,7 +8,6 @@ import {
   View,
   type ViewStyle,
 } from 'react-native';
-import { Portal } from '@gorhom/portal';
 
 import She, { Commands } from './SheetViewNativeComponent';
 import SheetModule from './NativeSheet';
@@ -35,11 +34,13 @@ export interface FittedSheetParams {
    */
   useInlinePresentation?: boolean;
   /**
-   * Android only
+   * Android only.
    *
-   * Affects Navigation Bar Icons Colors
+   * Whether the sheet's content background is light. Drives the appearance
+   * of status bar and navigation bar icons (light icons on dark backgrounds,
+   * dark icons on light backgrounds). Defaults to true.
    */
-  isContentBackgroundLight: boolean;
+  isContentBackgroundLight?: boolean;
 }
 
 type FittedSheetChildren =
@@ -48,7 +49,7 @@ type FittedSheetChildren =
   | React.ReactElement[];
 
 export interface SheetProps {
-  params: FittedSheetParams;
+  params?: FittedSheetParams;
   onSheetDismiss?: (passThroughParam?: any) => void;
   children?: FittedSheetChildren;
   rootViewStyle?: StyleProp<Omit<ViewStyle, 'flex' | 'flexGrow' | 'position'>>;
