@@ -43,13 +43,6 @@ jest.mock('./src/SheetViewNativeComponent', () => {
   };
 });
 
-// Mock @gorhom/portal
-jest.mock('@gorhom/portal', () => ({
-  Portal: ({ children }) => children,
-  PortalProvider: ({ children }) => children,
-  PortalHost: ({ children }) => children,
-}));
-
 // Suppress console logs during tests
 global.console = {
   ...console,
