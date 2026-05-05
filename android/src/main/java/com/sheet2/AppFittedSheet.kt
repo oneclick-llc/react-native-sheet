@@ -52,7 +52,7 @@ open class AppFittedSheet(context: Context) : ViewGroup(context), LifecycleEvent
     }
   var topLeftRightCornerRadius: Float = 0F
   var _backgroundColor: Int = Color.TRANSPARENT
-  var isSystemUILight: Boolean = false
+  var isContentBackgroundLight: Boolean = false
   var useInlinePresentation: Boolean = false
     set(value) {
       field = value

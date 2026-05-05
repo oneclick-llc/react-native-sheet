@@ -19,7 +19,7 @@ interface NativeProps extends ViewProps {
   minHeight?: Double;
   calculatedHeight?: Double;
   topLeftRightCornerRadius?: Double;
-  isSystemUILight: boolean;
+  isContentBackgroundLight: boolean;
   passScrollViewReactTag?: string;
   uniqueId: string;
   sheetBackgroundColor?: ColorValue;

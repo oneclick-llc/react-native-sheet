@@ -18,19 +18,19 @@ class FragmentModalBottomSheet() : BottomSheetDialogFragment() {
 
   private var modalView: ViewGroup? = null
   private var dismissable: Boolean = true
-  private var isSystemUILight: Boolean = false
+  private var isContentBackgroundLight: Boolean = false
   private var onDismiss: ((dismissAll: Boolean) -> Unit)? = null
   var dismissAll = false
 
   constructor(
     modalView: ViewGroup,
     dismissable: Boolean,
-    isSystemUILight: Boolean,
+    isContentBackgroundLight: Boolean,
     onDismiss: (dismissAll: Boolean) -> Unit
   ) : this() {
     this.modalView = modalView
     this.dismissable = dismissable
-    this.isSystemUILight = isSystemUILight
+    this.isContentBackgroundLight = isContentBackgroundLight
     this.onDismiss = onDismiss
   }
 

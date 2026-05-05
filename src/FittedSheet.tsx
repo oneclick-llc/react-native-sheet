@@ -215,7 +215,9 @@ export class PrivateFittedSheet extends React.PureComponent<SheetProps, State> {
         }
         windowLevel={this.props.params?.windowLevel}
         useInlinePresentation={this.props.params?.useInlinePresentation}
-        isSystemUILight={this.props.params?.isSystemUILight ?? true}
+        isContentBackgroundLight={
+          this.props.params?.isContentBackgroundLight ?? true
+        }
         calculatedHeight={nativeHeight}
         passScrollViewReactTag={this.state.passScrollViewReactTag}
       >

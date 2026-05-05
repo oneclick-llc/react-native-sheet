@@ -69,9 +69,9 @@ class Sheet2ViewManager(reactContext: ReactApplicationContext) : ViewGroupManage
     view.topLeftRightCornerRadius = value.dpToPx()
   }
 
-  override fun setIsSystemUILight(view: Sheet2View, value: Boolean) {
-    println("==========setIsSystemUILight $value")
-    view.isSystemUILight = value
+  override fun setIsContentBackgroundLight(view: Sheet2View, value: Boolean) {
+    println("==========setIsContentBackgroundLight $value")
+    view.isContentBackgroundLight = value
   }
 
   override fun setPassScrollViewReactTag(view: Sheet2View, value: String?) {
