@@ -47,6 +47,7 @@ class FragmentModalBottomSheet() : BottomSheetDialogFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
+    log("onCreateView(...) | isModalViewDefined: ${modalView != null}")
     // If modalView is null (fragment restored by system), dismiss immediately
     if (modalView == null) {
       dismissAllowingStateLoss()

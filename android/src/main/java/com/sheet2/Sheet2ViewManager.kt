@@ -34,11 +34,12 @@ class Sheet2ViewManager(reactContext: ReactApplicationContext) : ViewGroupManage
   }
 
   public override fun createViewInstance(context: ThemedReactContext): Sheet2View {
+    debugLog { "createViewInstance(...)" }
     return Sheet2View(context)
   }
 
   override fun dismissSheet(view: Sheet2View) {
-    println("==========dismissSheet")
+    debugLog { "dismissSheet(view.id: ${view.id})" }
     view.dismiss()
   }
 
@@ -47,43 +48,44 @@ class Sheet2ViewManager(reactContext: ReactApplicationContext) : ViewGroupManage
   }
 
   override fun setDismissable(view: Sheet2View, value: Boolean) {
-    println("==========setDismissable $value")
+    debugLog { "setDismissable(view.id: ${view.id}, value: $value)" }
     view.dismissable = value
   }
 
   override fun setMaxWidth(view: Sheet2View, value: Double) {
-    println("==========setMaxWidth $value")
+    debugLog { "setMaxWidth(view.id: ${view.id}, value: $value)" }
     view.maxWidth = value.dpToPx()
   }
 
   override fun setMaxHeight(view: Sheet2View, value: Double) {
-    println("==========setMaxHeight $value")
+    debugLog { "setMaxHeight(view.id: ${view.id}, value: $value)" }
     view.mHostView.sheetMaxHeightSize = value.dpToPx()
   }
 
   override fun setMinHeight(view: Sheet2View, value: Double) {
-    println("==========setMinHeight $value")
+    debugLog { "setMinHeight(view.id: ${view.id}, value: $value)" }
     view.mHostView.sheetMinHeightSize = value.dpToPx()
   }
 
   override fun setTopLeftRightCornerRadius(view: Sheet2View, value: Double) {
-    println("==========setTopLeftRightCornerRadius $value")
+    debugLog { "setTopLeftRightCornerRadius(view.id: ${view.id}, value: $value)" }
     view.topLeftRightCornerRadius = value.dpToPx()
   }
 
   override fun setIsContentBackgroundLight(view: Sheet2View, value: Boolean) {
-    println("==========setIsContentBackgroundLight $value")
+    debugLog { "setIsContentBackgroundLight(view.id: ${view.id}, value: $value)" }
     view.isContentBackgroundLight = value
   }
 
   override fun setPassScrollViewReactTag(view: Sheet2View, value: String?) {
-    println("==========setPassScrollViewReactTag $value")
+    debugLog { "setPassScrollViewReactTag(view.id: ${view.id}, value: $value)" }
     value ?: return
     val v = BottomSheetBehavior.findView(view) ?: return
     view.setNewNestedScrollView(v)
   }
 
   override fun setSheetBackgroundColor(view: Sheet2View, value: Int?) {
+    debugLog { "setSheetBackgroundColor(view.id: ${view.id}, value: $value)" }
     view._backgroundColor = value ?: Color.TRANSPARENT
   }
 
@@ -96,11 +98,12 @@ class Sheet2ViewManager(reactContext: ReactApplicationContext) : ViewGroupManage
   }
 
   override fun setCalculatedHeight(view: Sheet2View, value: Double) {
-    println("==========setCalculatedHeight $value")
+    debugLog { "setCalculatedHeight(view.id: ${view.id}, value: $value)" }
     view.mHostView.setVirtualHeight(value.dpToPx())
   }
 
   override fun onAfterUpdateTransaction(view: Sheet2View) {
+    debugLog { "onAfterUpdateTransaction(view.id: ${view.id})" }
     super.onAfterUpdateTransaction(view)
     view.showOrUpdate()
   }
