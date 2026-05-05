@@ -25,6 +25,16 @@ export interface FittedSheetParams {
   topLeftRightCornerRadius?: number;
   backgroundColor?: string;
   /**
+   * iOS only. Window level for the sheet.
+   * 'normal' | 'statusBar' | 'alert' (default: 'alert')
+   */
+  windowLevel?: 'normal' | 'statusBar' | 'alert';
+  /**
+   * iOS only. When true, presents the sheet in the current view controller
+   * instead of creating a separate UIWindow. Default: false.
+   */
+  useInlinePresentation?: boolean;
+  /**
    * Android only
    *
    * Affects Navigation Bar Icons Colors
@@ -32,7 +42,7 @@ export interface FittedSheetParams {
   isContentBackgroundLight: boolean;
 }
 
-type Children =
+type FittedSheetChildren =
   | ((data: any) => React.ReactElement)
   | React.ReactElement
   | React.ReactElement[];
@@ -40,8 +50,8 @@ type Children =
 export interface SheetProps {
   params: FittedSheetParams;
   onSheetDismiss?: (passThroughParam?: any) => void;
-  children?: Children;
-  rootViewStyle?: StyleProp<ViewStyle>;
+  children?: FittedSheetChildren;
+  rootViewStyle?: StyleProp<Omit<ViewStyle, 'flex' | 'flexGrow' | 'position'>>;
 }
 
 interface State {
@@ -97,6 +107,7 @@ export class PrivateFittedSheet extends React.PureComponent<SheetProps, State> {
     if (!this.state.show) return;
     this.onHidePassThroughParam = passThroughParam;
     this.log('hide', Commands.dismissSheet);
+    //@ts-ignore
     Commands.dismissSheet(this.sheetRef.current);
   };
 
@@ -187,47 +198,47 @@ export class PrivateFittedSheet extends React.PureComponent<SheetProps, State> {
     }
     const background = this.props?.params?.backgroundColor;
     return (
-      <Portal hostName={'SheetHost'}>
-        <_FittedSheet
-          key={this.uniqueId.toString()}
-          onSheetDismiss={this.onDismiss}
-          uniqueId={this.uniqueId.toString()}
-          ref={this.sheetRef}
-          onStartShouldSetResponder={this._shouldSetResponder}
-          style={{ width: maxWidth, position: 'absolute' }}
-          dismissable={this.props.params?.dismissable ?? true}
-          maxWidth={maxWidth}
-          maxHeight={maxHeight}
-          sheetBackgroundColor={background}
-          minHeight={minHeight}
-          topLeftRightCornerRadius={
-            this.props.params?.topLeftRightCornerRadius ?? 20
-          }
-          isSystemUILight={this.props.params.isContentBackgroundLight}
-          calculatedHeight={nativeHeight}
-          passScrollViewReactTag={this.state.passScrollViewReactTag}
+      <_FittedSheet
+        key={this.uniqueId.toString()}
+        onSheetDismiss={this.onDismiss}
+        uniqueId={this.uniqueId.toString()}
+        ref={this.sheetRef}
+        onStartShouldSetResponder={this._shouldSetResponder}
+        style={{ width: maxWidth, position: 'absolute' }}
+        dismissable={this.props.params?.dismissable ?? true}
+        maxWidth={maxWidth}
+        maxHeight={maxHeight}
+        sheetBackgroundColor={background}
+        minHeight={minHeight}
+        topLeftRightCornerRadius={
+          this.props.params?.topLeftRightCornerRadius ?? 20
+        }
+        windowLevel={this.props.params?.windowLevel}
+        useInlinePresentation={this.props.params?.useInlinePresentation}
+        isSystemUILight={this.props.params?.isSystemUILight ?? true}
+        calculatedHeight={nativeHeight}
+        passScrollViewReactTag={this.state.passScrollViewReactTag}
+      >
+        <View
+          nativeID={'fitted-sheet-root-view'}
+          onLayout={this.onLayout}
+          style={[
+            {
+              width: maxWidth,
+              maxHeight,
+              backgroundColor: background,
+            },
+            this.props.rootViewStyle,
+          ]}
         >
-          <View
-            nativeID={'fitted-sheet-root-view'}
-            onLayout={this.onLayout}
-            style={[
-              {
-                width: maxWidth,
-                maxHeight,
-                backgroundColor: background,
-              },
-              this.props.rootViewStyle,
-            ]}
-          >
-            {this.props.children &&
-              typeof this.props.children === 'function' &&
-              this.props.children(this.state.data)}
-            {this.props.children &&
-              typeof this.props.children !== 'function' &&
-              this.props.children}
-          </View>
-        </_FittedSheet>
-      </Portal>
+          {this.props.children &&
+            typeof this.props.children === 'function' &&
+            this.props.children(this.state.data)}
+          {this.props.children &&
+            typeof this.props.children !== 'function' &&
+            this.props.children}
+        </View>
+      </_FittedSheet>
     );
   }
 }

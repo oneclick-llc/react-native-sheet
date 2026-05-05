@@ -21,6 +21,7 @@ const Buttons = () => {
           <TouchableOpacity
             key={index}
             onPress={() => {
+              //@ts-ignore
               nav.navigate(screen.name);
             }}
           >
@@ -35,16 +36,25 @@ const Buttons = () => {
 export default function App() {
   return (
     <View style={styles.container}>
-      <SheetProvider>
-        <NavigationContainer>
-          <Stack.Navigator>
-            <Stack.Screen name={'Buttons'} component={Buttons} />
-            {screens.map((s) => (
-              <Stack.Screen {...s} component={s.getScreen()} key={s.slug} />
-            ))}
-          </Stack.Navigator>
-        </NavigationContainer>
-      </SheetProvider>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name={'Buttons'} component={Buttons} />
+          {screens.map((s) => (
+            <Stack.Screen
+              component={s.getScreen()}
+              key={s.slug}
+              {...s}
+              options={{
+                presentation:
+                  s.name === 'FullScreenModalOverSheet'
+                    ? 'fullScreenModal'
+                    : 'card',
+              }}
+            />
+          ))}
+        </Stack.Navigator>
+      </NavigationContainer>
+      <SheetProvider addGlobalSheetView />
     </View>
   );
 }

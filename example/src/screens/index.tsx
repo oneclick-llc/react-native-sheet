@@ -13,8 +13,29 @@ import { DismissPresentedExample } from './modal/DismissPresentedExample';
 import { Keyboard3Example } from './modal/Keyboard3Example';
 import { NamedExample } from './modal/NamedExample';
 import { MultipleExample } from './modal/MultipleExample';
+import { GlobalSimpleUsage } from './modal/GlobalSimpleUsage';
+import { DataPassingUsage } from './modal/DataPassingUsage';
+import { InvertedListExample } from './modal/InvertedListExample';
+import E2ETestScreen from './modal/E2ETestScreen';
+import { FullScreenModalOverSheetExample } from './modal/FullScreenModalOverSheetExample';
+import { BigRedTouchExample } from './modal/BigRedTouchExample';
 
 export const screens = [
+  {
+    name: 'BigRedTouch',
+    slug: 'Modal/BigRedTouch',
+    getScreen: () => BigRedTouchExample,
+  },
+  {
+    name: 'FullScreenModalOverSheet',
+    slug: 'Modal/FullScreenModalOverSheet',
+    getScreen: () => FullScreenModalOverSheetExample,
+  },
+  {
+    name: 'E2E Test',
+    slug: 'Modal/E2ETest',
+    getScreen: () => E2ETestScreen,
+  },
   {
     name: 'Dynamic Snap Point',
     slug: 'Modal/DynamicSnapPointExample',
@@ -89,5 +110,20 @@ export const screens = [
     name: 'DismissPreventExample',
     slug: 'Modal/DismissPreventExample',
     getScreen: () => DismissPreventExample,
+  },
+  {
+    name: 'GlobalSimpleUsage',
+    slug: 'Modal/GlobalSimpleUsage',
+    getScreen: () => GlobalSimpleUsage,
+  },
+  {
+    name: 'DataPassingUsage',
+    slug: 'Modal/DataPassingUsage',
+    getScreen: () => DataPassingUsage,
+  },
+  {
+    name: 'InvertedListExample',
+    slug: 'Modal/InvertedListExample',
+    getScreen: () => InvertedListExample,
   },
 ];

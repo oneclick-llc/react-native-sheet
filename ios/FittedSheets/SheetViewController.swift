@@ -343,6 +343,17 @@ public class SheetViewController: UIViewController {
             self.firstPanPoint = point
             self.prePanHeight = self.contentViewController.view.bounds.height
             self.isPanning = true
+            if self.options.useInlineMode {
+                // Inline containment: the sheet lives inside the host
+                // RCTSurfaceView, so the main surface's RCTSurfaceTouchHandler
+                // (a UIGestureRecognizer on an ancestor) is tracking the same
+                // touch in parallel. `cancelsTouchesInView` only cancels
+                // delivery to UIViews — sibling gesture recognizers continue
+                // tracking and would emit a press on touchesEnded. Bounce
+                // their `isEnabled` to force-cancel and dispatch a touchCancel
+                // to JS so a swipe-to-dismiss isn't mistaken for a tap.
+                self.cancelAncestorRNTouchHandlers()
+            }
         }
 
         let minHeight: CGFloat = self.height(for: self.orderedSizes.first)
@@ -469,6 +480,21 @@ public class SheetViewController: UIViewController {
                 break
             @unknown default:
                 break // Do nothing
+        }
+    }
+
+    private func cancelAncestorRNTouchHandlers() {
+        var v: UIView? = self.view.superview
+        while let view = v {
+            if let recognizers = view.gestureRecognizers {
+                for r in recognizers where r is RCTSurfaceTouchHandler {
+                    if r.isEnabled {
+                        r.isEnabled = false
+                        r.isEnabled = true
+                    }
+                }
+            }
+            v = view.superview
         }
     }
 
@@ -626,9 +652,8 @@ extension SheetViewController: UIGestureRecognizerDelegate {
         guard pointInChildScrollView > 0, pointInChildScrollView < childScrollView.bounds.height else {
             return true
         }
-        let topInset = childScrollView.contentInset.top
 
-        if !(abs(velocity.y) > abs(velocity.x) && childScrollView.contentOffset.y <= -topInset) {
+        if !(abs(velocity.y) > abs(velocity.x) && isScrollViewAtVisualTop(childScrollView)) {
             return false
         }
 
@@ -638,6 +663,28 @@ extension SheetViewController: UIGestureRecognizerDelegate {
         } else {
             return true
         }
+    }
+
+    private func isScrollViewInverted(_ scrollView: UIScrollView) -> Bool {
+        // Check the scroll view itself and its ancestors for scaleY = -1.
+        // React Native applies the inverted transform via layer.transform (CATransform3D)
+        // on a parent wrapper view (RCTScrollView), not on the inner UIScrollView (RCTEnhancedScrollView).
+        var view: UIView? = scrollView
+        while let current = view {
+            if current.transform.d < 0 { return true }
+            if current.layer.transform.m22 < 0 { return true }
+            view = current.superview
+        }
+        return false
+    }
+
+    private func isScrollViewAtVisualTop(_ scrollView: UIScrollView) -> Bool {
+        if isScrollViewInverted(scrollView) {
+            let maxOffsetY = scrollView.contentSize.height - scrollView.bounds.height + scrollView.contentInset.bottom
+            if maxOffsetY <= 0 { return true }
+            return scrollView.contentOffset.y >= maxOffsetY - 1
+        }
+        return scrollView.contentOffset.y <= -scrollView.contentInset.top
     }
 }
 
