@@ -14,7 +14,11 @@ import androidx.core.view.WindowInsetsControllerCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.lang.ref.WeakReference
 
+private val debugLog = LogFactory("FragmentModalBottomSheet")
+
 class FragmentModalBottomSheet() : BottomSheetDialogFragment() {
+
+  private fun log(message: String) = debugLog { "$message | id: $id" }
 
   private var modalView: ViewGroup? = null
   private var dismissable: Boolean = true

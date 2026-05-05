@@ -14,6 +14,8 @@ import com.facebook.react.uimanager.ViewManagerDelegate
 import com.facebook.react.viewmanagers.SheetViewManagerDelegate
 import com.facebook.react.viewmanagers.SheetViewManagerInterface
 
+private val debugLog = LogFactory("Sheet2ViewManager")
+
 @ReactModule(name = Sheet2ViewManager.NAME)
 class Sheet2ViewManager(reactContext: ReactApplicationContext) : ViewGroupManager<Sheet2View>(reactContext),
   SheetViewManagerInterface<Sheet2View> {
