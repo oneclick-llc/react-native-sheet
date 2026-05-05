@@ -176,7 +176,7 @@ open class AppFittedSheet(context: Context) : ViewGroup(context), LifecycleEvent
       val fragment = FragmentModalBottomSheet(
         modalView = mHostView,
         dismissable = dismissable,
-        isContentBackgroundLight = isSheetContentBackgroundLight
+        isContentBackgroundLight = this@AppFittedSheet.isContentBackgroundLight
       ) { dismissAll ->
         val parent = mHostView.parent as? ViewGroup
         parent?.removeViewAt(0)
