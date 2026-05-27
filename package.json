@@ -3,7 +3,7 @@
   "workspaces": [
     "example"
   ],
-  "version": "7.10.0",
+  "version": "7.10.1",
   "description": "Native implementation of Bottom sheet",
   "main": "src/index.tsx",
   "module": "src/index",
