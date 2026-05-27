@@ -122,7 +122,8 @@ open class BaseRNView(context: Context?) : ReactViewGroup(context), RootView {
   }
 
   override fun requestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
-    // No-op - override in order to still receive events to onInterceptTouchEvent
-    // even when some other view disallow that
+    // Keep this RootView intercepting events for JS dispatch, but let native
+    // parents respect scrollable children such as ReactEditText.
+    parent?.requestDisallowInterceptTouchEvent(disallowIntercept)
   }
 }
