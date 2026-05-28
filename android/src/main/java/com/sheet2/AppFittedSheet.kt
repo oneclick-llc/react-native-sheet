@@ -267,7 +267,6 @@ open class AppFittedSheet(context: Context) : ViewGroup(context), LifecycleEvent
   override fun dispatchPopulateAccessibilityEvent(event: AccessibilityEvent?) = false
   override fun onHostResume() { showOrUpdate() }
   override fun onHostPause() {}
-  override fun onHostDestroy() { onDropInstance() }
 
   override fun onHostDestroy() {
     log("onHostDestroy")
