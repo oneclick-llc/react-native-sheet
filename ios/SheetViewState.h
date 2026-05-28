@@ -4,7 +4,7 @@
 #include <react/renderer/graphics/Float.h>
 #include <react/renderer/graphics/Point.h>
 
-#ifdef RN_SERIALIZABLE_STATE
+#ifdef ANDROID
 #include <react/renderer/mapbuffer/MapBuffer.h>
 #include <react/renderer/mapbuffer/MapBufferBuilder.h>
 #endif
@@ -29,7 +29,7 @@ class SheetViewState {
   SheetViewState(SheetViewState const& previousState, Point contentOriginOffset)
       : contentOriginOffset(contentOriginOffset) {}
 
-#ifdef RN_SERIALIZABLE_STATE
+#ifdef ANDROID
   SheetViewState(SheetViewState const& previousState, folly::dynamic data) {
     auto x = data["contentOriginOffsetX"];
     auto y = data["contentOriginOffsetY"];
