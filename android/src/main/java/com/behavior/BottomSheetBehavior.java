@@ -319,6 +319,7 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
   private ValueAnimator interpolatorAnimator;
 
   private static final int DEF_STYLE_RES = R.style.Widget_Design_BottomSheet_Modal;
+  private static final int SHEET_DRAG_TOUCH_SLOP_MULTIPLIER = 2;
 
   int expandedOffset;
 
@@ -353,6 +354,7 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
   private int lastNestedScrollDy;
 
   private boolean nestedScrolled;
+  private int nestedScrollDragDy;
 
   private float hideFriction = HIDE_FRICTION;
 
@@ -718,6 +720,7 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
     }
     if (!ignoreEvents
       && viewDragHelper != null
+      && (action != MotionEvent.ACTION_MOVE || isPastSheetDragTouchSlop(event))
       && viewDragHelper.shouldInterceptTouchEvent(event)) {
       return true;
     }
@@ -731,7 +734,7 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
       && state != STATE_DRAGGING
       && (!parent.isPointInChildBounds(scroll, (int) event.getX(), (int) event.getY()) || (initialY - event.getY() < 10 && !canVisuallyScrollUp(scroll)))
       && viewDragHelper != null
-      && Math.abs(initialY - event.getY()) > viewDragHelper.getTouchSlop();
+      && isPastSheetDragTouchSlop(event);
     return iss;
   }
 
@@ -745,7 +748,7 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
     if (state == STATE_DRAGGING && action == MotionEvent.ACTION_DOWN) {
       return true;
     }
-    if (shouldHandleDraggingWithHelper()) {
+    if (shouldHandleDraggingWithHelper() && shouldForwardToDragHelper(event)) {
       viewDragHelper.processTouchEvent(event);
     }
     // Record the velocity
@@ -759,7 +762,7 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
     // The ViewDragHelper tries to capture only the top-most View. We have to explicitly tell it
     // to capture the bottom sheet in case it is not captured and the touch slop is passed.
     if (shouldHandleDraggingWithHelper() && action == MotionEvent.ACTION_MOVE && !ignoreEvents) {
-      if (Math.abs(initialY - event.getY()) > viewDragHelper.getTouchSlop()) {
+      if (isPastSheetDragTouchSlop(event)) {
         viewDragHelper.captureChildView(child, event.getPointerId(event.getActionIndex()));
       }
     }
@@ -776,6 +779,7 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
     int type) {
     lastNestedScrollDy = 0;
     nestedScrolled = false;
+    nestedScrollDragDy = 0;
     return (axes & ViewCompat.SCROLL_AXIS_VERTICAL) != 0;
   }
 
@@ -817,6 +821,9 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
           // Prevent dragging
           return;
         }
+        if (!isPastNestedScrollDragTouchSlop(physicalDy)) {
+          return;
+        }
 
         consumed[1] = dy;
         ViewCompat.offsetTopAndBottom(child, -physicalDy);
@@ -827,6 +834,9 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
         if (newTop <= collapsedOffset || canBeHiddenByDragging()) {
           if (!draggable) {
             // Prevent dragging
+            return;
+          }
+          if (!isPastNestedScrollDragTouchSlop(physicalDy)) {
             return;
           }
 
@@ -918,6 +928,7 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
     }
     startSettling(child, targetState, false);
     nestedScrolled = false;
+    nestedScrollDragDy = 0;
   }
 
   @Override
@@ -1647,6 +1658,27 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
     // If it's not draggable, do not forward events to viewDragHelper; however, if it's already
     // dragging, let it finish.
     return viewDragHelper != null && (draggable || state == STATE_DRAGGING);
+  }
+
+  private boolean shouldForwardToDragHelper(@NonNull MotionEvent event) {
+    return event.getActionMasked() != MotionEvent.ACTION_MOVE
+      || state == STATE_DRAGGING
+      || isPastSheetDragTouchSlop(event);
+  }
+
+  private boolean isPastSheetDragTouchSlop(@NonNull MotionEvent event) {
+    return viewDragHelper != null
+      && Math.abs(initialY - event.getY()) >
+      viewDragHelper.getTouchSlop() * SHEET_DRAG_TOUCH_SLOP_MULTIPLIER;
+  }
+
+  private boolean isPastNestedScrollDragTouchSlop(int dy) {
+    if (state == STATE_DRAGGING || viewDragHelper == null) {
+      return true;
+    }
+    nestedScrollDragDy += dy;
+    return Math.abs(nestedScrollDragDy) >
+      viewDragHelper.getTouchSlop() * SHEET_DRAG_TOUCH_SLOP_MULTIPLIER;
   }
 
   private void createMaterialShapeDrawableIfNeeded(@NonNull Context context) {
