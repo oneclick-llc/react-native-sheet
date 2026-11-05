@@ -37,7 +37,8 @@ class InsetsAnimationCallback extends WindowInsetsAnimationCompat.Callback {
   private final int[] tmpLocation = new int[2];
 
   public InsetsAnimationCallback(View view) {
-    super(DISPATCH_MODE_STOP);
+    // Footer followers need the same IME frames after the sheet applies its translation.
+    super(DISPATCH_MODE_CONTINUE_ON_SUBTREE);
     this.view = view;
   }
 
